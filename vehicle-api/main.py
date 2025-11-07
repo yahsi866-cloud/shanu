@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -13,9 +14,9 @@ def home():
 
 @app.route('/api', methods=['GET', 'POST'])
 def vehicle_api():
-    # Get vehicle number from query or POST data
+    # Get vehicle number
     if request.method == 'POST':
-        vehicle_no = request.form.get('vehicle_no') or request.json.get('vehicle_no') if request.is_json else None
+        vehicle_no = request.form.get('vehicle_no') or (request.json.get('vehicle_no') if request.is_json else None)
     else:
         vehicle_no = request.args.get('vehicle_no')
     
@@ -54,4 +55,6 @@ def vehicle_api():
         return jsonify({'status': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    # Get port from environment (Render automatically sets this)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
