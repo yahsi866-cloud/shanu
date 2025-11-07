@@ -14,7 +14,6 @@ def home():
 
 @app.route('/api', methods=['GET', 'POST'])
 def vehicle_api():
-    # Get vehicle number
     if request.method == 'POST':
         vehicle_no = request.form.get('vehicle_no') or (request.json.get('vehicle_no') if request.is_json else None)
     else:
@@ -23,7 +22,6 @@ def vehicle_api():
     if not vehicle_no:
         return jsonify({'status': False, 'error': 'vehicle_no required'}), 400
     
-    # Call GTPlay API
     url = "https://gtplay.in/API/vehicle_challan_info/testapi.php"
     data = f'vehicle_no={vehicle_no}'
     headers = {
@@ -50,11 +48,9 @@ def vehicle_api():
                 'status': False,
                 'message': result.get('error', 'Not found')
             }), 404
-            
     except Exception as e:
         return jsonify({'status': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
-    # Get port from environment (Render automatically sets this)
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
